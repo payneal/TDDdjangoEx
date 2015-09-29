@@ -1,6 +1,9 @@
 import unittest
 from selenium import webdriver
 
+#allows ENTER instead of \n
+from selenium.webdriver.common.keys import Keys
+
 class HomePageTest(unittest.TestCase):
 	def setUp(self): 
 		self.browser = webdriver.Firefox()
@@ -8,49 +11,59 @@ class HomePageTest(unittest.TestCase):
 	def tearDown(self):
 		self.browser.quit()
 
+	#helper method - DRY
+	def check_for_row_in_list_table(self, rowtext):
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn( rowtext,  [row.text for row in rows])
+
+	def enter_an_item_in_list_table(self, itemToEnter):
+		inputBox = self.browser.find_element_by_id('id_new_item')
+		self.assertEqual(inputBox.get_attribute('placeholder'), 'Enter a To-Do item')
+		inputBox.send_keys(itemToEnter)
+		inputBox.send_keys('\n')
+
+	
 	def test_home_page(self):
 		# Edith has heard about a ool new online to-do app. She goes to 
 		# check out its home page
 		self.browser.get('http://localhost:8000')
 	
-		#she notices the page totle and header mention to-do lists.. 	
+		#she notices the page title and header mention to-do lists.. 	
 		self.assertIn( 'To-Do', self.browser.title)
 		header = self.browser.find_element_by_tag_name('h1')
 		self.assertIn('To-Do', header.text)
 
-		
 		# She is invited to enter a to-do item straight away
 		# She types "Buy peacock feathers" into a text box (Edith's hobby
 		# is tying fly-fishing lures)
-		inputBox = self.browser.find_element_by_id('id_new_item')
-		self.assertEqual(inputBox.get_attribute('placeholder'), 'Enter a To-Do item')
-
-		inputBox.send_keys('Buy peacock feathers')
-		inputBox.send_keys('\n')#enter
+		self.enter_an_item_in_list_table('Buy peacock feathers')
 
 		# When she hits enter, the page updates, and now the page lists
 		# "1: Buy peacock feathers" as an item in a to-do list
-		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_elements_by_tag_name('tr')
-		self.assertIn('1: Buy peacock feathers',  [row.text for row in rows])
-
-		self.fail('finish the test!')#havent finished coding
+		self.check_for_row_in_list_table("1: Buy peacock feathers")
 
 		# There is still a text box inviting her to add another item. She
 		# enters "Use peacock feathers to make a fly" (Edith is very methodical)
+		self.enter_an_item_in_list_table('Use peacock feathers to make a fly')
 
 		# The page updates again, and now shows both items on her list
-
+		self.check_for_row_in_list_table("1: Buy peacock feathers")
+		self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
+		
 		# Edith wonders whether the site will remember her list. Then she sees
 		# that the site has generated a unique URL for her -- there is some
 		# explanatory text to that effect.
 
-		# She visits that URL - her to-do list is still there.
+		#PAUSES PROGRAM FOR 10 SECONDS 
+		import time
+		time.sleep(5)
+		self.fail('finish the test!')#havent finished coding
 
+		# She visits that URL - her to-do list is still there.
 		# Satisfied, she goes back to sleep
 		
 		
-
 if __name__ == '__main__': 
 	unittest.main()
 
