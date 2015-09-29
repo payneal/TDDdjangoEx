@@ -4,7 +4,20 @@
 </head> 
 <body> 
 	<h1>To-Do List</h1>
-	<input id='id_new_item' placeholder= "Enter a To-Do item" /> 
+	
+	<form method="Post"> 
+		
+		<input id='id_new_item' name='item_text' placeholder= "Enter a To-Do item" /> 
+		{% csrf_token %}
+	</form>
+
+	<table id ='id_list_table'> 
+		<tr>
+			<td>1: {{new_item_text}}</td>
+		<tr>
+
+	</table> 
+
 </body> 
 
 </html>

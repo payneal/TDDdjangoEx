@@ -28,10 +28,13 @@ class HomePageTest(unittest.TestCase):
 		inputBox.send_keys('Buy peacock feathers')
 		inputBox.send_keys('\n')#enter
 
-		self.fail('finish the test!')#havent finished coding
-
 		# When she hits enter, the page updates, and now the page lists
 		# "1: Buy peacock feathers" as an item in a to-do list
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn('1: Buy peacock feathers',  [row.text for row in rows])
+
+		self.fail('finish the test!')#havent finished coding
 
 		# There is still a text box inviting her to add another item. She
 		# enters "Use peacock feathers to make a fly" (Edith is very methodical)
