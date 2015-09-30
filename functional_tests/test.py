@@ -1,10 +1,11 @@
-import unittest
+from django.test import LiveServerTestCase
+# the above must have unit test in it
 from selenium import webdriver
 
 #allows ENTER instead of \n
 from selenium.webdriver.common.keys import Keys
 
-class HomePageTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 	def setUp(self): 
 		self.browser = webdriver.Firefox()
 	
@@ -27,7 +28,7 @@ class HomePageTest(unittest.TestCase):
 	def test_home_page(self):
 		# Edith has heard about a ool new online to-do app. She goes to 
 		# check out its home page
-		self.browser.get('http://localhost:8000')
+		self.browser.get(self.live_server_url)
 	
 		#she notices the page title and header mention to-do lists.. 	
 		self.assertIn( 'To-Do', self.browser.title)
@@ -63,8 +64,3 @@ class HomePageTest(unittest.TestCase):
 		# She visits that URL - her to-do list is still there.
 		# Satisfied, she goes back to sleep
 		
-		
-if __name__ == '__main__': 
-	unittest.main()
-
-
