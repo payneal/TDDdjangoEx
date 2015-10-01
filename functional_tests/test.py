@@ -68,19 +68,19 @@ class NewVisitorTest(LiveServerTestCase):
 	
 		# Francis visuts the home page, yet there is no sign of Ediths list
 		self.browser.get(self.live_server_url)
-		page_text = self.browswer.find_element_by_tag_name('body').text
+		page_text = self.browser.find_element_by_tag_name('body').text
 		self.assertNotIn("Buy peacock feathers", page_text)
 		self.assertNotIn("make a fly", page_text)
 
 		# Francis starts a new list by entering a new item.
 		# he is less interesting than edith...
-		enter_an_item_in_list_table(self, 'buy milk')
+		self.enter_an_item_in_list_table('buy milk')
 
 
 		#francis gets his own unique URL 
 		francis_list_url   = self.browser.current_url
-		self.assertRegex(francis_list_url, '/list/.+')
-		se;f.assertNotEqual(francis_list_url, edith_list_url)
+		self.assertRegex(francis_list_url, '/lists/.+')
+		self.assertNotEqual(francis_list_url, edith_list_url)
 
 		# again, there is no trace of ediths list 
 		page_text = self.browser.find_element_by_tag_name('body').text
