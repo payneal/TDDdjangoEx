@@ -40,8 +40,12 @@ class NewVisitorTest(LiveServerTestCase):
 		# is tying fly-fishing lures)
 		self.enter_an_item_in_list_table('Buy peacock feathers')
 
-		# When she hits enter, the page updates, and now the page lists
+		# When she hits enter, she is taken to a new url, and now 
+		# the page updates, and now the page lists
 		# "1: Buy peacock feathers" as an item in a to-do list
+		edith_list_url = self.browser.current_url
+		self.assertRegex(edith_list_url, 'lists/.+')
+
 		self.check_for_row_in_list_table("1: Buy peacock feathers")
 
 		# There is still a text box inviting her to add another item. She
@@ -52,9 +56,40 @@ class NewVisitorTest(LiveServerTestCase):
 		self.check_for_row_in_list_table("1: Buy peacock feathers")
 		self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
 		
-		# Edith wonders whether the site will remember her list. Then she sees
-		# that the site has generated a unique URL for her -- there is some
-		# explanatory text to that effect.
+		# now a new user, Francis, comes algo to the site
+
+		## we use a new browser session to make sure that no information 
+		## of ediths is comming through from cookies etc# 
+		self.browser.quit()
+		self.browser = webdriver.Firefox()
+
+		# side not ## indicate meta-comments - comments on how the test is working 
+		# and why
+	
+		# Francis visuts the home page, yet there is no sign of Ediths list
+		self.browser.get(self.live_server_url)
+		page_text = self.browswer.find_element_by_tag_name('body').text
+		self.assertNotIn("Buy peacock feathers", page_text)
+		self.assertNotIn("make a fly", page_text)
+
+		# Francis starts a new list by entering a new item.
+		# he is less interesting than edith...
+		enter_an_item_in_list_table(self, 'buy milk')
+
+
+		#francis gets his own unique URL 
+		francis_list_url   = self.browser.current_url
+		self.assertRegex(francis_list_url, '/list/.+')
+		se;f.assertNotEqual(francis_list_url, edith_list_url)
+
+		# again, there is no trace of ediths list 
+		page_text = self.browser.find_element_by_tag_name('body').text
+		self.assertNotIn('Buy peacock feathers', page_text)
+		self.asssertIn('buy milk', page_text)
+
+
+		
+
 
 		#PAUSES PROGRAM FOR 10 SECONDS 
 		import time
